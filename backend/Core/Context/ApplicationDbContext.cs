@@ -18,14 +18,23 @@ namespace backend.Core.Context
         {
             base.OnModelCreating(modelBuilder);
             // Configure relationships and constraints if needed
-            modelBuilder.Entity<Company>()
-                .HasMany(c => c.Jobs)
-                .WithOne(j => j.Company)
-                .HasForeignKey(j => j.CompanyId);
             modelBuilder.Entity<Job>()
-                .HasMany(j => j.Candidates)
-                .WithOne(c => c.Job)
-                .HasForeignKey(c => c.JobId);
+                 .HasOne(job => job.Company)
+                 .WithMany(company => company.Jobs)
+                 .HasForeignKey(job => job.CompanyId);
+
+            modelBuilder.Entity<Candidate>()
+                .HasOne(candidate => candidate.Job)
+                .WithMany(job => job.Candidates)
+                .HasForeignKey(candidate => candidate.JobId);
+
+            modelBuilder.Entity<Company>()
+                .Property(company => company.Size)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Job>()
+              .Property(job => job.Level)
+              .HasConversion<string>();
         }
 
         //protected ApplicationDbContext()
